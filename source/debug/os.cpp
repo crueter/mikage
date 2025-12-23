@@ -122,7 +122,7 @@ static void doProcessThreadList(OSService& service, const Pistache::Rest::Reques
         }();
 
         // TODO: Send jitcontextid only for EmuThreads!
-        auto emu_thread = dynamic_cast<HLE::OS::EmuThread*>(&thread);
+        // auto emu_thread = dynamic_cast<HLE::OS::EmuThread*>(&thread);
         auto jitcontextid = 4294967297; // TODO: Retrieve from emu_thread
         body += fmt::format(R"({{ "id": {}, "pid": {}, "name": "{}", "status": "{}", "jitcontextid": {} }},)",
                             tid_and_thread.first, thread.GetParentProcess().GetId(), thread.GetName(),

@@ -575,7 +575,7 @@ static auto BindMemFn(Func f, Class* c) {
     return boost::hana::partial(std::mem_fn(f), c);
 }
 
-static int lol = 0; // TODO: Un-global-ize
+// static int lol = 0; // TODO: Un-global-ize
 void FakeDSP::OnIPCRequest(FakeThread& thread, Handle sender, const IPC::CommandHeader& header) {
     switch (header.command_id) {
     case 0x1: // RecvData

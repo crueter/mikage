@@ -103,13 +103,13 @@ T ParseSignedData(Stream& stream) {
 
 template<typename T>
 void SaveSignedData(FileFormat::Signature sig, const T& data, std::ostream& stream) {
-    auto begin = (unsigned long long)stream.tellp();
+    // auto begin = uint64_t(stream.tellp());
     FileFormat::Save<boost::endian::big_uint32_t>(sig.type, stream);
 
     stream.write(reinterpret_cast<const char*>(sig.data.data()), sig.data.size() * sizeof(sig.data[0]));
 
     // TODO: Pad to 0x40 bytes for any type of signature, remove placeholder code
-  //  auto padded_data_begin = begin + (unsigned long long){((unsigned long long)stream.tellp() - begin + 63) & ~UINT32_C(63)};
+  //  auto padded_data_begin = begin + uint64_t{(uint64_tstream.tellp() - begin + 63) & ~UINT32_C(63)};
 
 //    ZeroUpTo(stream, padded_data_begin);
     size_t pad_size;
@@ -178,7 +178,7 @@ CIA::NCCH ParseNCCH(std::ifstream& file) {
     CIA::NCCH ret;
 
     // TODO: Narrowing cast!
-    auto ncch_begin = (unsigned long long)(file.tellg());
+    auto ncch_begin = uint64_t(file.tellg());
 
     auto strbuf_it = std::istreambuf_iterator<char>(file.rdbuf());
     auto stream = FileFormat::MakeStreamInFromContainer(strbuf_it, decltype(strbuf_it){});
@@ -238,7 +238,7 @@ CIA::NCCH ParseNCCH(std::ifstream& file) {
     }
 
     // TODO: Check NCCH header flags before reading the exheader
-    auto exheader_begin = file.tellg();
+    // auto exheader_begin = file.tellg();
     const auto exheader_data = Meta::invoke([&] {
         // NOTE: The given header_size only refers to the hashed exheader region rather than the full exheader size
         std::vector<uint8_t> data(FileFormat::ExHeader::Tags::expected_serialized_size);
@@ -409,13 +409,13 @@ CIA::NCCH ParseNCCH(std::ifstream& file) {
 //    }
 
 
-    auto plain_data_begin = ncch_begin + (unsigned long long){ncch.plain_data_offset.ToBytes()};
+    auto plain_data_begin = ncch_begin + uint64_t{ncch.plain_data_offset.ToBytes()};
     file.seekg(plain_data_begin);
     auto& plain_data = ret.plain_data.data;
     plain_data.resize(ncch.plain_data_size.ToBytes());
     file.read(reinterpret_cast<char*>(plain_data.data()), plain_data.size());
 
-    auto logo_begin = ncch_begin + (unsigned long long){ncch.logo_offset.ToBytes()};
+    auto logo_begin = ncch_begin + uint64_t{ncch.logo_offset.ToBytes()};
     file.seekg(logo_begin);
     auto& logo = ret.logo.data;
     logo.resize(ncch.logo_size.ToBytes());
@@ -437,7 +437,7 @@ CIA::NCCH ParseNCCH(std::ifstream& file) {
     }
 
 
-    auto exefs_begin = ncch_begin + (unsigned long long){ncch.exefs_offset.ToBytes()};
+    auto exefs_begin = ncch_begin + uint64_t{ncch.exefs_offset.ToBytes()};
     file.seekg(exefs_begin);
 
     CryptoPP::SHA256 exefs_hash;
@@ -461,7 +461,7 @@ CIA::NCCH ParseNCCH(std::ifstream& file) {
 
     ret.exefs.header = FileFormat::Load<FileFormat::ExeFSHeader>(stream);
     // TODO: Narrowing cast!
-    auto exefs_end = (unsigned long long)(file.tellg());
+    auto exefs_end = uint64_t(file.tellg());
     auto& exefs = ret.exefs.header;
     for (size_t section_index = 0; section_index < exefs.files.size(); ++section_index) {
         const auto& exefs_section = exefs.files[section_index];
@@ -475,7 +475,7 @@ CIA::NCCH ParseNCCH(std::ifstream& file) {
         std::cout << "\"" << std::endl;
 
         // TODO: Early abort if size is zero!
-        auto section_offset = exefs_end + (unsigned long long){exefs_section.offset};
+        auto section_offset = exefs_end + uint64_t{exefs_section.offset};
         file.seekg(section_offset);
 
         // TODO: Cleanup
@@ -502,7 +502,7 @@ CIA::NCCH ParseNCCH(std::ifstream& file) {
 #endif
     }
 
-    auto romfs_begin = ncch_begin + (unsigned long long){ncch.romfs_offset.ToBytes()};
+    auto romfs_begin = ncch_begin + uint64_t{ncch.romfs_offset.ToBytes()};
     file.seekg(romfs_begin);
 
     auto& romfs_data = ret.romfs.data;
@@ -534,11 +534,11 @@ CIA ParseCIA(std::ifstream& file) {
     std::cout << std::endl;
 
     // TODO: Handle overflow cases for large content_size values..
-    auto cert_begin = static_cast<unsigned long long>(cia_begin) + (unsigned long long){(cia.header_size + 63) & ~UINT32_C(63)};
-    auto ticket_begin = cert_begin + (unsigned long long){(cia.certificate_chain_size + 63) & ~UINT32_C(63)};
-    auto tmd_begin = ticket_begin + (unsigned long long){(cia.ticket_size + 63) & ~UINT32_C(63)};
-    auto content_begin = tmd_begin + (unsigned long long){(cia.tmd_size + 63) & ~UINT32_C(63)};
-    auto meta_begin = content_begin + (unsigned long long){(cia.content_size + 63) & ~UINT32_C(63)};
+    auto cert_begin = uint64_t(cia_begin) + uint64_t{(cia.header_size + 63) & ~UINT32_C(63)};
+    auto ticket_begin = cert_begin + uint64_t{(cia.certificate_chain_size + 63) & ~UINT32_C(63)};
+    auto tmd_begin = ticket_begin + uint64_t{(cia.ticket_size + 63) & ~UINT32_C(63)};
+    auto content_begin = tmd_begin + uint64_t{(cia.tmd_size + 63) & ~UINT32_C(63)};
+    auto meta_begin = content_begin + uint64_t{(cia.content_size + 63) & ~UINT32_C(63)};
 
     file.seekg(cert_begin);
     strbuf_it = std::istreambuf_iterator<char>(file.rdbuf());
@@ -599,7 +599,7 @@ CIA ParseCIA(std::ifstream& file) {
     std::cout << "Permit mask: 0x" << ticket.data.permit_mask << std::endl;
     std::cout << "Title export: 0x" << +ticket.data.title_export << std::endl;
     std::cout << "KeyY index: 0x" << +ticket.data.key_y_index << std::endl;
-    for (auto i = 0; i < ticket.data.time_limit.size(); ++i) {
+    for (uint64_t i = 0; i < ticket.data.time_limit.size(); ++i) {
         if (ticket.data.time_limit[i].enable) {
             std::cout << "Time limit " << std::dec << i << ": " << ticket.data.time_limit[i].limit_in_seconds << " seconds" << std::endl;
         }
@@ -831,8 +831,8 @@ WriteNCCHFlags operator| (WriteNCCHFlags flags, WriteNCCHFlags mask) {
 }
 
 template<typename StreamPos>
-unsigned long long NarrowCastStreamPos(StreamPos streampos) {
-    return (unsigned long long)streampos;
+uint64_t NarrowCastStreamPos(StreamPos streampos) {
+    return uint64_t(streampos);
 }
 
 static void WriteExeFS(CIA::NCCH::ExeFS& exefs, std::ostream& stream) {
@@ -855,7 +855,7 @@ static void WriteExeFS(CIA::NCCH::ExeFS& exefs, std::ostream& stream) {
             continue;
 
         exefs_section.offset = NarrowCastStreamPos(stream.tellp()) - header_end;
-        auto section_offset = header_end + (unsigned long long){exefs_section.offset};
+        auto section_offset = header_end + uint64_t{exefs_section.offset};
         assert(section_offset >= stream.tellp());
         ZeroUpTo(stream, section_offset);
 
@@ -907,7 +907,7 @@ void WriteNCCH(CIA::NCCH& ncch, std::ostream& file, WriteNCCHFlags flags) {
         header.plain_data_offset = FileFormat::MediaUnit32::FromBytes(RoundToNextMediaUnit(NarrowCastStreamPos(file.tellp()) - ncch_begin));
         header.plain_data_size = FileFormat::MediaUnit32::FromBytes(plain_data.size());
 #endif
-        auto plain_data_begin = ncch_begin + (unsigned long long){header.plain_data_offset.ToBytes()};
+        auto plain_data_begin = ncch_begin + uint64_t{header.plain_data_offset.ToBytes()};
         ZeroUpTo(file, plain_data_begin);
         file.write(reinterpret_cast<const char*>(plain_data.data()), plain_data.size());
         ZeroUpToNextMediaUnitFrom(file, ncch_begin);
@@ -918,7 +918,7 @@ void WriteNCCH(CIA::NCCH& ncch, std::ostream& file, WriteNCCHFlags flags) {
         header.logo_offset = FileFormat::MediaUnit32::FromBytes(RoundToNextMediaUnit(NarrowCastStreamPos(file.tellp()) - ncch_begin));
         header.logo_size = FileFormat::MediaUnit32::FromBytes(logo_data.size());
 #endif
-        auto logo_begin = ncch_begin + (unsigned long long){header.logo_offset.ToBytes()};
+        auto logo_begin = ncch_begin + uint64_t{header.logo_offset.ToBytes()};
         ZeroUpTo(file, logo_begin);
         file.write(reinterpret_cast<const char*>(logo_data.data()), logo_data.size());
         ZeroUpToNextMediaUnitFrom(file, ncch_begin);
@@ -932,7 +932,7 @@ void WriteNCCH(CIA::NCCH& ncch, std::ostream& file, WriteNCCHFlags flags) {
 #ifdef UPDATE_FIELDS
     header.exefs_offset = FileFormat::MediaUnit32::FromBytes(NarrowCastStreamPos(file.tellp()) - ncch_begin);
 #endif
-    auto exefs_begin = ncch_begin + (unsigned long long){header.exefs_offset.ToBytes()};
+    auto exefs_begin = ncch_begin + uint64_t{header.exefs_offset.ToBytes()};
 
     ZeroUpTo(file, exefs_begin);
     header.exefs_offset = FileFormat::MediaUnit32::FromBytes(RoundToNextMediaUnit(NarrowCastStreamPos(file.tellp()) - ncch_begin));
@@ -1023,9 +1023,9 @@ void WriteCIA(CIA& cia, std::ofstream& file, WriteNCCHFlags flags) {
 
     auto content_mask_begin = cia_begin + cia.content_mask.size();
 
-    auto cert_begin = NarrowCastStreamPos(cia_begin) + (unsigned long long){(content_mask_begin + 63) & ~UINT32_C(63)};
+    auto cert_begin = NarrowCastStreamPos(cia_begin) + uint64_t{(content_mask_begin + 63) & ~UINT32_C(63)};
     ZeroUpTo(file, cert_begin);
-    for (auto cert_index = 0; cert_index < cia.certificates.size(); ++cert_index) {
+    for (uint64_t cert_index = 0; cert_index < cia.certificates.size(); ++cert_index) {
         auto& certificate = cia.certificates[cert_index];
         SaveSignedData(certificate.sig, certificate.cert, file);
 
@@ -1045,7 +1045,7 @@ void WriteCIA(CIA& cia, std::ofstream& file, WriteNCCHFlags flags) {
     cia.ticket.data.ticket_id = 0x0004988F4CA451C8; // ???
     cia.ticket.data.title_id = alt_titleid;
 #endif
-    auto ticket_begin = cert_begin + (unsigned long long){(cia.header.certificate_chain_size + 63) & ~UINT32_C(63)};
+    auto ticket_begin = cert_begin + uint64_t{(cia.header.certificate_chain_size + 63) & ~UINT32_C(63)};
     ZeroUpTo(file, ticket_begin);
     SaveSignedData(cia.ticket.sig, cia.ticket.data, file);
     cia.header.ticket_size = NarrowCastStreamPos(file.tellp()) - ticket_begin;
@@ -1057,7 +1057,7 @@ void WriteCIA(CIA& cia, std::ofstream& file, WriteNCCHFlags flags) {
         return stream.str();
     });
 
-    auto tmd_begin = ticket_begin + (unsigned long long){(cia.header.ticket_size + 63) & ~UINT32_C(63)};
+    auto tmd_begin = ticket_begin + uint64_t{(cia.header.ticket_size + 63) & ~UINT32_C(63)};
     ZeroUpTo(file, tmd_begin);
     assert(cia.tmd.content_infos.size() == 1); // TODO: Support more than one content
 #ifdef UPDATE_FIELDS
@@ -1124,14 +1124,14 @@ void WriteCIA(CIA& cia, std::ofstream& file, WriteNCCHFlags flags) {
 
     // TODO: Support multiple contents
     // TODO: Assert for just a single content being here
-    auto content_begin = tmd_begin + (unsigned long long){(cia.header.tmd_size + 63) & ~UINT32_C(63)};
+    auto content_begin = tmd_begin + uint64_t{(cia.header.tmd_size + 63) & ~UINT32_C(63)};
     ZeroUpTo(file, content_begin);
     file.write(serialized_content.data(), serialized_content.size());
 #ifdef UPDATE_FIELDS
     cia.header.content_size = NarrowCastStreamPos(file.tellp()) - content_begin;
 #endif
 
-    auto meta_begin = content_begin + (unsigned long long){(cia.header.content_size + 63) & ~UINT32_C(63)};
+    auto meta_begin = content_begin + uint64_t{(cia.header.content_size + 63) & ~UINT32_C(63)};
     ZeroUpTo(file, meta_begin);
     FileFormat::Save(cia.meta, file);
     cia.header.meta_size = NarrowCastStreamPos(file.tellp()) - meta_begin;
@@ -1264,7 +1264,7 @@ void Inject3DSXFrom(std::istream& stream, CIA::NCCH& inject_target) {
 
                     uint32_t unpatched_word = *patch_ptr;
                     uint32_t virtual_address = (unpatched_word & 0x0FFFFFFF) + text_vaddr; // TODO: This might be oversimplified compared to TranslateAddress
-                    uint32_t sub_type = unpatched_word >> 28;
+                    // uint32_t sub_type = unpatched_word >> 28;
 
                     if (patch_kind == 0) {
                         assert(sub_type == 0);
@@ -1382,7 +1382,7 @@ void Generate3DSX(std::istream& stream, CIA::NCCH& inject_target) {
 
                     uint32_t unpatched_word = *patch_ptr;
                     uint32_t virtual_address = (unpatched_word & 0x0FFFFFFF) + text_vaddr; // TODO: This might be oversimplified compared to TranslateAddress
-                    uint32_t sub_type = unpatched_word >> 28;
+                    // uint32_t sub_type = unpatched_word >> 28;
 
                     if (patch_kind == 0) {
                         assert(sub_type == 0);
@@ -1432,7 +1432,7 @@ void validate(boost::any& v,
 
     try {
         size_t pos;
-        auto result = HexUint64{std::stoull(s, &pos, 16)};
+        [[maybe_unused]] auto result = HexUint64{std::stoull(s, &pos, 16)};
         if (pos == s.size())
             v = boost::any(HexUint64{std::stoull(s, 0, 16)});
         else
@@ -1491,7 +1491,7 @@ int main(int argc, char* argv[]) {
             }
 
             bpo::notify(var_map);
-        } catch (bpo::error error) {
+        } catch (bpo::error &error) {
             std::cout << desc << std::endl;
             return 1;
         }

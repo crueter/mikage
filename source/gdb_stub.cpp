@@ -115,7 +115,7 @@ static std::optional<CombinedProcessThreadId> ParseProcessThreadId(const std::st
  * @todo we shouldn't be using the HLE::OS::ProcessId type for this protocol-specific quantity!
  */
 static bool IsAnyProcess(HLE::OS::ProcessId pid) {
-    return pid == 0 || pid == -1;
+    return pid == 0 || pid == uint32_t(-1);
 }
 
 /**
@@ -123,7 +123,7 @@ static bool IsAnyProcess(HLE::OS::ProcessId pid) {
  * @todo we shouldn't be using the HLE::OS::ThreadId type for this protocol-specific quantity!
  */
 static bool IsAnyThread(HLE::OS::ThreadId tid) {
-    return tid == 0 || tid == -1;
+    return tid == 0 || tid == uint32_t(-1);
 }
 
 /**

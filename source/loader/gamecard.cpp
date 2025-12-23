@@ -419,7 +419,7 @@ public:
         // Read program sections
         uint32_t text_numpages = ((dot3dsxheader.text_size + 0xfff) >> 12);
         uint32_t ro_numpages = ((dot3dsxheader.ro_size + 0xfff) >> 12);
-        uint32_t data_numpages = (((dot3dsxheader.data_bss_size - dot3dsxheader.bss_size) + 0xfff) >> 12);
+        // uint32_t data_numpages = (((dot3dsxheader.data_bss_size - dot3dsxheader.bss_size) + 0xfff) >> 12);
 
         uint32_t text_vaddr = 0x00100000;
         uint32_t ro_vaddr = text_vaddr + (text_numpages << 12);

@@ -114,11 +114,11 @@ CIA ParseCIA(std::ifstream& file) {
     std::cout << std::endl;
 
     // TODO: Handle overflow cases for large content_size values..
-    auto cert_begin = static_cast<unsigned long long>(cia_begin) + (unsigned long long){(cia.header_size + 63) & ~UINT32_C(63)};
-    auto ticket_begin = cert_begin + (unsigned long long){(cia.certificate_chain_size + 63) & ~UINT32_C(63)};
-    auto tmd_begin = ticket_begin + (unsigned long long){(cia.ticket_size + 63) & ~UINT32_C(63)};
-    auto content_begin = tmd_begin + (unsigned long long){(cia.tmd_size + 63) & ~UINT32_C(63)};
-    auto meta_begin = content_begin + (unsigned long long){(cia.content_size + 63) & ~UINT32_C(63)};
+    auto cert_begin = static_cast<uint64_t>(cia_begin) + uint64_t{(cia.header_size + 63) & ~UINT32_C(63)};
+    auto ticket_begin = cert_begin + uint64_t{(cia.certificate_chain_size + 63) & ~UINT32_C(63)};
+    auto tmd_begin = ticket_begin + uint64_t{(cia.ticket_size + 63) & ~UINT32_C(63)};
+    auto content_begin = tmd_begin + uint64_t{(cia.tmd_size + 63) & ~UINT32_C(63)};
+    auto meta_begin = content_begin + uint64_t{(cia.content_size + 63) & ~UINT32_C(63)};
 
     file.seekg(cert_begin);
     strbuf_it = std::istreambuf_iterator<char>(file.rdbuf());

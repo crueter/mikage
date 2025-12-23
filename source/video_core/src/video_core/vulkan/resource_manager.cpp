@@ -1076,8 +1076,8 @@ void RenderTargetResource::ProtectBackingEmulatedMemory(Memory::PhysicalMemory& 
                                     [&](PAddr page_addr) -> Memory::ReadHandler* {
                                         auto& tracked_page = manager.GetTrackedMemoryPage(page_addr);
 
-                                        const bool is_first_read_hook =
-                                            (tracked_page.resources.end() == ranges::find_if(tracked_page.resources, Memory::HasReadHook, &TrackedMemoryPage::Entry::hook_kind));
+                                        // const bool is_first_read_hook =
+                                        //     (tracked_page.resources.end() == ranges::find_if(tracked_page.resources, Memory::HasReadHook, &TrackedMemoryPage::Entry::hook_kind));
 
                                         // If this Resource is already registered,
                                         // add the ReadHook flag to it. Otherwise,

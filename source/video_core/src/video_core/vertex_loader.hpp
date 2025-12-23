@@ -63,7 +63,7 @@ public:
         // TODO: Add bounds check on vertex! When initializing vertex_attribute_sources, we should compute the maximum vertex index possible and compare against that
         // TODO: Verify all vertex_attribute_sources used have actually been initialized
 
-        for (int i = 0; i < attribute_config.GetNumTotalAttributes(); ++i) {
+        for (uint32_t i = 0; i < attribute_config.GetNumTotalAttributes(); ++i) {
             auto& attr = input.attr[i];
             if (!vertex_attribute_sources[i]) { // TODO: Check vertex_attribute_elements and vertex_attribute_element_size instead?
                 // TODO: Required by lego batman during bootup?
@@ -117,7 +117,7 @@ public:
     GetUsedAddressRanges(const Regs::VertexAttributes& attribute_config, uint32_t min_index, uint32_t end_index) const {
         std::array<std::pair<uint32_t, uint32_t>, 16> ret {};
 
-        for (int i = 0; i < attribute_config.GetNumTotalAttributes(); ++i) {
+        for (uint32_t i = 0; i < attribute_config.GetNumTotalAttributes(); ++i) {
             if (!vertex_attribute_sources[i]) {
                 continue;
             }
@@ -172,7 +172,7 @@ private:
     VertexShader::InputVertex GetDefaultAttributes(const Context& context, const Regs::VertexAttributes& attribute_config) const {
         VertexShader::InputVertex input;
 
-        for (int i = 0; i < attribute_config.GetNumTotalAttributes(); ++i) {
+        for (uint32_t i = 0; i < attribute_config.GetNumTotalAttributes(); ++i) {
             auto& attr = input.attr[i];
 
             if (vertex_attribute_elements[i]) {

@@ -251,7 +251,7 @@ static void UpdateCPSR_C_FromBorrow(CPUContext& ctx, uint32_t left, uint32_t rig
 }
 
 static void UpdateCPSR_C_FromBorrow(CPUContext& ctx, uint32_t left, uint32_t right, uint32_t cpsr_c) {
-    bool borrow = left < (static_cast<uint64_t>(right) + !cpsr_c);
+    bool borrow = left < (uint64_t(right) + !cpsr_c);
     ctx.cpu.cpsr.carry = !borrow;
 }
 
@@ -271,8 +271,8 @@ static void UpdateCPSR_V_FromSub(CPUContext& ctx, uint32_t left, uint32_t right,
 static void UpdateCPSR_V_FromSub(CPUContext& ctx, uint32_t left, uint32_t right, uint32_t result, uint32_t carry) {
     right = ~right;
     // TODO: Portability!
-    uint64_t signed_sum = static_cast<int64_t>(static_cast<int32_t>(left)) + static_cast<int64_t>(static_cast<int32_t>(right)) + static_cast<uint64_t>(carry);
-    ctx.cpu.cpsr.overflow = static_cast<int64_t>(static_cast<int32_t>(result)) != signed_sum;
+    uint64_t signed_sum = int64_t(int32_t(left)) + int64_t(int32_t(right)) + uint64_t(carry);
+    ctx.cpu.cpsr.overflow = int64_t(int32_t(result)) != signed_sum;
 }
 
 // Evaluates the given condition based on CPSR

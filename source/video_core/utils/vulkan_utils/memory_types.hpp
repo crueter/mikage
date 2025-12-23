@@ -48,7 +48,7 @@ public:
             }
 
             auto& type = properties.memoryTypes[type_index];
-            auto& heap = properties.memoryHeaps[type.heapIndex];
+            // auto& heap = properties.memoryHeaps[type.heapIndex];
 
             if ((desired_flags & type.propertyFlags) == desired_flags) {
                 return { size, type_index };

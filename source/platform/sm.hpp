@@ -30,7 +30,7 @@ struct PortName {
         std::string strname(name);
         length = strname.length();
         uint32_t value = 0;
-        for (int i = 0; i < 8; ++i) {
+        for (uint32_t i = 0; i < 8; ++i) {
             char c = (i < length) ? strname[i] : 0;
             value = (c << 24) | (value >> 8);
             if (i == 3 || i == 7) {

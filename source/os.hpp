@@ -1217,7 +1217,7 @@ class ServerPort : public ObserverSubject {
     uint32_t available_sessions;
 
 public:
-    ServerPort(std::shared_ptr<Port> port, uint32_t max_sessions) : port(port), available_sessions(max_sessions) {
+    ServerPort(std::shared_ptr<Port> port, uint32_t max_sessions) : available_sessions(max_sessions), port(port) {
     }
 
     virtual ~ServerPort() = default;

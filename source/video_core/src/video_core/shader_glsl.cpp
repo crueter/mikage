@@ -2306,7 +2306,7 @@ static std::string TranslateToGLSL(Context& context, Instruction instr) {
             return fmt::format("uniforms.f[{}{}]", reg.GetIndex(), address_register_index ? fmt::format(" + a{}", *address_register_index) : "");
 
         default:
-            __builtin_unreachable();
+            UNREACHABLE();
         }
     };
 
@@ -2319,7 +2319,7 @@ static std::string TranslateToGLSL(Context& context, Instruction instr) {
             return fmt::format("temp_{}", reg.GetIndex());
 
         default:
-            __builtin_unreachable();
+            UNREACHABLE();
         }
     };
 

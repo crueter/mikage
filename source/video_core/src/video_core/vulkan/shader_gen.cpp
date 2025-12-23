@@ -349,8 +349,8 @@ std::string GenerateFragmentShader(Context& context) {
         using AlphaModifier = Regs::TevStageConfig::AlphaModifier;
         using Operation = Regs::TevStageConfig::Operation;
 
-        const bool is_nop_stage_rgb = (tev_stage.color_modifier1() == ColorModifier::SourceColor && tev_stage.color_op() == Operation::Replace);
-        const bool is_nop_stage_a = (tev_stage.alpha_modifier1() == AlphaModifier::SourceAlpha && tev_stage.alpha_op() == Operation::Replace);
+        // const bool is_nop_stage_rgb = (tev_stage.color_modifier1() == ColorModifier::SourceColor && tev_stage.color_op() == Operation::Replace);
+        // const bool is_nop_stage_a = (tev_stage.alpha_modifier1() == AlphaModifier::SourceAlpha && tev_stage.alpha_op() == Operation::Replace);
 
         std::string tev_stage_str = "tev" + std::to_string(tev_stage_index) + "_";
 
@@ -669,7 +669,7 @@ std::string GenerateFragmentShader(Context& context) {
             switch (func) {
             case AlphaTest::Function::NotEqual:
                 return "==";
-            
+
             case AlphaTest::Function::LessThan:
                 return ">=";
 
