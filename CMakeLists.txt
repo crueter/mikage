@@ -55,13 +55,13 @@ find_package(spdlog REQUIRED)
 
 include(FindPkgConfig)
 
-find_package(cryptopp)
+find_package(cryptopp QUIET)
 if (NOT cryptopp_FOUND)
     pkg_search_module(cryptopp REQUIRED IMPORTED_TARGET cryptopp libcryptopp)
     add_library(cryptopp::cryptopp ALIAS PkgConfig::cryptopp)
 endif()
 
-find_package(Pistache)
+find_package(Pistache QUIET)
 if (Pistache_FOUND)
     add_compile_definitions(ENABLE_PISTACHE=1)
 else()
@@ -72,7 +72,12 @@ find_package(Catch2 REQUIRED)
 
 find_package(Tracy REQUIRED)
 
-find_package(xxHash REQUIRED)
+find_package(xxHash QUIET)
+if (NOT xxHash_FOUND)
+    pkg_search_module(xxHash REQUIRED IMPORTED_TARGET xxhash libxxhash)
+    add_library(xxHash::xxhash ALIAS PkgConfig::xxHash)
+endif()
+
 
 find_package(Vulkan REQUIRED)
 
@@ -83,7 +88,7 @@ find_package(glslang REQUIRED)
 #set_property(TARGET proj PROPERTY CXX_STANDARD_REQUIRED ON)
 
 if(NOT ANDROID)
-    find_package(libunwind)
+    find_package(libunwind QUIET)
     if (NOT libunwind_FOUND)
         pkg_search_module(libunwind IMPORTED_TARGET libunwind)
         if (TARGET PkgConfig::libunwind)
