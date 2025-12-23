@@ -81,6 +81,8 @@ target_link_libraries(mikage PRIVATE vulkan-util)
 target_link_libraries(mikage PRIVATE teakra)
 target_link_libraries(mikage PRIVATE cryptopp::cryptopp)
 
+add_compile_definitions(TRACY_FIBERS)
+
 # std::filesystem library must explicitly be linked on older stdlibc++ versions.
 # If needed, set this variable to stdc++fs or c++fs depending on the standard library used.
 if (STD_FILESYSTEM_LIBRARY)
