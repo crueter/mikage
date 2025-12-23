@@ -31,7 +31,7 @@ struct InputVertex {
 //    Math::Vec4<float24> attr[16];
     std::array<Math::Vec4<float24>, 16> attr;
 };
-static_assert(std::is_pod<InputVertex>::value, "Structure is not POD");
+static_assert(std::is_standard_layout_v<InputVertex> && std::is_trivial_v<InputVertex>, "Structure is not POD");
 
 struct OutputVertex {
     OutputVertex() = default;
@@ -77,7 +77,7 @@ struct OutputVertex {
         return ret;
     }
 };
-static_assert(std::is_pod<OutputVertex>::value, "Structure is not POD");
+static_assert(std::is_standard_layout_v<OutputVertex> && std::is_trivial_v<OutputVertex>, "Structure is not POD");
 static_assert(sizeof(OutputVertex) == 32 * sizeof(float), "OutputVertex has invalid size");
 
 struct ShaderEngine {
