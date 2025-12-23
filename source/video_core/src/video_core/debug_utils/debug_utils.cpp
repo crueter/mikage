@@ -257,7 +257,7 @@ std::unique_ptr<PicaTrace> FinishPicaTracing()
     pica_trace_mutex.lock();
     std::unique_ptr<PicaTrace> ret(std::move(pica_trace));
     pica_trace_mutex.unlock();
-    return std::move(ret);
+    return ret;
 }
 
 const Math::Vec4<u8> LookupTexture(Memory::HostMemoryBackedPages source_memory, int x, int y, const TextureInfo& info, bool disable_alpha) {
@@ -569,9 +569,9 @@ void DumpTexture(const Pica::TextureConfig& texture_config, u8* data) {
     return;
 
 #ifndef HAVE_PNG
-	return;
+    return;
 #else
-	if (!data)
+    if (!data)
         return;
 
     // Write data to file

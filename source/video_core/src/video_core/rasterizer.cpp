@@ -809,6 +809,9 @@ static void ProcessTriangleInternal(Context& context,
 
                     case StencilTest::CompareFunc::GreaterThanOrEqual:
                         return ref >= current;
+
+                    default:
+                        return true;
                     }
                 };
                 stencil_passed = compare_stencil(   stencil_test.compare_function(),

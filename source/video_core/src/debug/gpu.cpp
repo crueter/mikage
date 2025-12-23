@@ -191,7 +191,7 @@ static void DoGetBytecode(GPUService& service, const Pistache::Rest::Request& re
 static void DoGetGLSL(GPUService& service, const Pistache::Rest::Request& request, Pistache::Http::ResponseWriter response) {
     std::lock_guard guard(service.access_mutex);
 
-    auto key = std::stoull(request.param(":key").as<std::string>(), 0, 16);
+    // auto key = std::stoull(request.param(":key").as<std::string>(), 0, 16);
 
     response.headers().add<Http::Header::AccessControlAllowOrigin>("*");
     response.headers().add<Http::Header::ContentType>(Http::Mime::MediaType { Http::Mime::Type::Application, Http::Mime::Subtype::Json });

@@ -1,11 +1,10 @@
 #include <framework/exceptions.hpp>
 
-#include <stack>
+#include <utility>
 
 #include <common/log.h>
 
 #include <nihstro/shader_bytecode.h>
-
 
 #include "context.h"
 #include "shader.hpp"
@@ -477,6 +476,9 @@ static void ProcessShaderCode(Context& context, ShaderInterpreter& engine) {
 
                 case flow_control.JustY:
                     return results[1];
+
+                default:
+                    UNREACHABLE();
                 }
             };
 

@@ -1,5 +1,6 @@
 # Adding an interface library to propagate include directories
-add_library(framework exceptions.cpp profiler.cpp)
+add_library(framework exceptions.cpp profiler.cpp
+    unreachable.h)
 target_include_directories(framework INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>)
 
 target_link_libraries(framework PUBLIC fmt::fmt)

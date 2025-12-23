@@ -321,8 +321,8 @@ OS::ResultAnd<ProcessId> LaunchTitleInternal(FakeThread& source, bool from_firm,
     // Register the created process to srv:pm
     // TODO: Enable this code...
     // TODO: Now that we fixed SM HLE, WE REALLY NEED TO DO THIS PROPERLY INSTEAD. I.e. have loader do this, and have loader register these via pm
-    auto not_null = [](auto letter) { return letter != 0; };
-    auto nonempty_entry = [&](const auto& service) { return boost::algorithm::any_of(service, not_null); };
+    // auto not_null = [](auto letter) { return letter != 0; };
+    // auto nonempty_entry = [&](const auto& service) { return boost::algorithm::any_of(service, not_null); };
 //    bool needs_services = boost::algorithm::any_of(exheader.service_access_list, nonempty_entry);
     if (false && needs_services) {
         // Register process through "srv:pm"
@@ -344,7 +344,7 @@ OS::ResultAnd<ProcessId> LaunchTitleInternal(FakeThread& source, bool from_firm,
         auto service_acl_addr = parent_process.AllocateStaticBuffer(service_acl_size);
         auto service_acl_numentries = service_acl_size / service_acl_entry_size;
 
-        for (auto off = 0; off < sizeof(exheader.aci.service_access_list); ++off) {
+        for (uint64_t off = 0; off < sizeof(exheader.aci.service_access_list); ++off) {
             auto entry = off / service_acl_entry_size;
             auto byte = off % service_acl_entry_size;
             source.WriteMemory(service_acl_addr + off, exheader.aci.service_access_list[entry][byte]);

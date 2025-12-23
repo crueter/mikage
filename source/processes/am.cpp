@@ -147,10 +147,10 @@ static auto AppCommandHandler(FakeThread& thread, FakeAM& context, const Platfor
         thread.WriteTLS(0x90, addr);
 //        thread.WriteMemory32(addr, /*0xe22f26aa*/ 00022000); // mset
 //        thread.WriteMemory32(addr + 4, /*0x0004feda*/ 00040010);
-for (int i = 0; i < num_tickets; ++i) {
-        thread.WriteMemory32(addr + i * 8, /*0xe22f26aa*/ (*nand_titles)[i] & 0xffffffff); // mset
-        thread.WriteMemory32(addr + 4 + i * 8, /*0x0004feda*/ (*nand_titles)[i] >> 32);
-}
+        for (uint32_t i = 0; i < num_tickets; ++i) {
+                thread.WriteMemory32(addr + i * 8, /*0xe22f26aa*/ (*nand_titles)[i] & 0xffffffff); // mset
+                thread.WriteMemory32(addr + 4 + i * 8, /*0x0004feda*/ (*nand_titles)[i] >> 32);
+        }
         break;
     }
 

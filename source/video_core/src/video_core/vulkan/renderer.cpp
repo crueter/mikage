@@ -279,8 +279,8 @@ void Renderer::ProduceFrame(EmuDisplay::EmuDisplay& display, EmuDisplay::Frame& 
     ZoneScoped;
     auto scope_measure = MeasureScope(*activity, "FrameProduction");
 
-            auto& image = frame.image;
-            auto& memory = frame.buffer_memory;
+            // auto& image = frame.image;
+            // auto& memory = frame.buffer_memory;
 
 //                part.in_use_by_cpu[buffer_index] = true;
 //                part.in_use_by_gpu[buffer_index] = { }; // Initialized by frontend before toggling in_use_by_cpu back to false
@@ -658,7 +658,7 @@ void Renderer::FinalizeTriangleBatchInternal(Context& context, const VertexShade
 
                 // TODO: Do we need to factor in vertex_attribute_element_size[idx], too?
 
-                uint32_t vertex_stride = loader.vertex_attribute_strides[i]; // in bytes. TODO: Do we need to care about alignment?
+                // uint32_t vertex_stride = loader.vertex_attribute_strides[i]; // in bytes. TODO: Do we need to care about alignment?
                 const uint32_t binding_index = i;
                 const uint32_t binding_stride = loader_config.byte_count;
                 // TODO: Use device requirements instead

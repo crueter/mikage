@@ -23,8 +23,8 @@ const char* ToString(Platform::NS::AppletPos pos) {
     case AppletPos::SysLib:   return "SysLib";
     case AppletPos::Resident: return "Resident";
     case AppletPos::AppLib2:  return "AppLib2";
-    case static_cast<AppletPos>(0xff): return "None?"; // Observed by swkbd during initialization
-    case static_cast<AppletPos>(0xffffffff): return "None?"; // Observed by ctrulib when switching to home menu
+    case AppletPos(0xff): return "None?"; // Observed by swkbd during initialization
+    case AppletPos(0xffffffff): return "None?"; // Observed by ctrulib when switching to home menu
     default:                  throw std::runtime_error("Unknown AppletPos");
     }
 }

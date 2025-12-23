@@ -365,7 +365,7 @@ struct FSUserService : SessionToPort {
                                            flags, attributes);
             Session::OnRequest(hypervisor, thread, session, description);
 
-            response.OnResponse([=](Hypervisor& hv, Thread& thread, Result result, Handle file_session_handle) {
+            response.OnResponse([=, this](Hypervisor& hv, Thread& thread, Result result, Handle file_session_handle) {
                 if (result != RESULT_OK) {
                     return;
                 }
@@ -389,7 +389,7 @@ struct FSUserService : SessionToPort {
                                            flags, attributes);
             Session::OnRequest(hypervisor, thread, session, description);
 
-            response.OnResponse([=](Hypervisor& hv, Thread& thread, Result result, Handle file_session_handle) {
+            response.OnResponse([=, this](Hypervisor& hv, Thread& thread, Result result, Handle file_session_handle) {
                 if (result != RESULT_OK) {
                     return;
                 }
@@ -464,7 +464,7 @@ struct FSUserService : SessionToPort {
                                            RawPathToString(thread, dir_path_type, dir_path_size, dir_path));
             Session::OnRequest(hypervisor, thread, session, description);
 
-            response.OnResponse([=](Hypervisor& hv, Thread& thread, Result result, Handle dir_session_handle) {
+            response.OnResponse([=, this](Hypervisor& hv, Thread& thread, Result result, Handle dir_session_handle) {
                 if (result != RESULT_OK) {
                     return;
                 }
@@ -480,7 +480,7 @@ struct FSUserService : SessionToPort {
                                            RawPathToString(thread, archive_path_type, archive_path_size, archive_path));
             Session::OnRequest(hypervisor, thread, session, description);
 
-            response.OnResponse([=](Hypervisor&, Thread& thread, Result result, FS::ArchiveHandle archive_handle) {
+            response.OnResponse([=, this](Hypervisor&, Thread& thread, Result result, FS::ArchiveHandle archive_handle) {
                 if (result != RESULT_OK) {
                     return;
                     // TODO: Enable this once we stop using dummy archives!

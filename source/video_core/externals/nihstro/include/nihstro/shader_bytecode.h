@@ -28,12 +28,12 @@
 #pragma once
 
 #include <cstdint>
-#include <map>
 #include <stdexcept>
 #include <string>
 #include <sstream>
 
 #include "bit_field.h"
+#include "framework/unreachable.h"
 
 namespace nihstro {
 
@@ -80,12 +80,16 @@ struct SourceRegister {
     }
 
     int GetIndex() const {
-        if (GetRegisterType() == RegisterType::Input)
+        switch (GetRegisterType()) {
+        case RegisterType::Input:
             return value;
-        else if (GetRegisterType() == RegisterType::Temporary)
+        case RegisterType::Temporary:
             return value - 0x10;
-        else if (GetRegisterType() == RegisterType::FloatUniform)
+        case RegisterType::FloatUniform:
             return value - 0x20;
+        default:
+            UNREACHABLE();
+        }
     }
 
     static const SourceRegister FromTypeAndIndex(RegisterType type, int index) {

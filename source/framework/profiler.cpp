@@ -125,7 +125,7 @@ FrozenMetrics Activity::GetMetricsAt(TimePoint now) const {
         ret.sub_metrics.emplace_back(activity.GetMetricsAt(now));
     }
     }
-    return std::move(ret);
+    return ret;
 }
 
 FrozenMetrics Profiler::Freeze() const {
