@@ -391,7 +391,7 @@ struct State {
 
     uint64_t cycle_count;
 };
-static_assert(std::is_pod<State>::value, "State is not a POD type");
+static_assert(std::is_standard_layout_v<State> && std::is_trivial_v<State>, "State is not a POD type");
 
 enum class OperandShifterMode : uint32_t {
     LSL = 0,     // Logical Shift Left
