@@ -13,7 +13,10 @@
 #include <range/v3/view/take.hpp>
 
 #include <iostream>
-#include <optional>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
@@ -51,8 +54,11 @@ VulkanInstanceManager::VulkanInstanceManager(spdlog::logger& logger, const char*
 }
 
 bool IsRenderDocActive() {
+#ifdef _WIN32
+    auto renderdoc_dll = GetModuleHandleA("renderdoc.dll");
+    return renderdoc_dll != nullptr;
+#else
     // Check if the RenderDoc shared library is loaded (note the use of RTLD_NOLOAD)
-
     auto renderdoc_so = dlopen("librenderdoc.so", RTLD_NOW | RTLD_NOLOAD);
     if (!renderdoc_so) {
         // Used on Android
@@ -63,6 +69,7 @@ bool IsRenderDocActive() {
         dlclose(renderdoc_so);
     }
     return is_active;
+#endif
 }
 
 VulkanDeviceManager::VulkanDeviceManager(VulkanInstanceManager& instance, spdlog::logger& logger, vk::SurfaceKHR surface, bool is_wayland) {

@@ -1,3 +1,4 @@
+#define SDL_MAIN_HANDLED
 #include "audio_frontend_sdl.hpp"
 
 #include <ui/key_database.hpp>
@@ -163,11 +164,22 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
-
-
+#ifndef _WIN32
         // Prefer XDG_DATA_DIRS, then /usr/local/share, then /usr/share
         auto xdg_data_dirs = getenv("XDG_DATA_DIRS");
         auto data_dirs = std::string { (xdg_data_dirs && *xdg_data_dirs != 0) ? xdg_data_dirs : "/usr/local/share:/usr/share" };
+#else
+        // On Windows, use the AppData/Roaming directory for the mikage folder
+        char* appdata = getenv("APPDATA");
+        if (!appdata) {
+            throw std::runtime_error("Could not determine APPDATA path. Please ensure the APPDATA "
+                                     "environment variable is set.");
+        }
+        auto data_dirs = std::string{appdata} + "\\mikage";
+        if (!std::filesystem::exists(data_dirs)) {
+            std::filesystem::create_directories(data_dirs);
+        }
+#endif
         for (auto data_dir : data_dirs | ranges::views::split(':')) {
             auto candidate = ranges::to<std::string>(data_dir) + "/mikage";
             if (std::filesystem::exists(candidate)) {
@@ -180,9 +192,14 @@ int main(int argc, char* argv[]) {
         }
 
         auto fill_home_path = [](std::string path) {
+#ifdef _WIN32
+            // On Windows, use USERPROFILE instead of HOME
+            auto home_dir = getenv("USERPROFILE");
+#else
             auto home_dir = getenv("HOME");
+#endif
             if (!home_dir) {
-                throw std::runtime_error("Could not determine path to home directory. Please set the HOME environment variable");
+                throw std::runtime_error("Could not determine path to home directory. Please set the HOME (POSIX) or USERPROFILE (Windows) environment variable.");
             }
             if (!path.starts_with("/HOME~/")) {
                 return path;
@@ -232,7 +249,7 @@ int main(int argc, char* argv[]) {
     });
     auto frontend_logger = log_manager->RegisterLogger("FRONTEND");
 
-    auto keydb = LoadKeyDatabase(*frontend_logger, "./aes_keys.txt");
+    auto keydb = LoadKeyDatabase(*frontend_logger, "aes_keys.txt");
 
 if (bootstrap_nand) // Experimental system bootstrapper
     try {
