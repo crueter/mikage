@@ -24,13 +24,15 @@ endif()
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Put binaries into <build>/bin
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+
 add_compile_options(-Werror=implicit-fallthrough)
 add_compile_options(-Werror=return-type)
 add_compile_options(-Werror=unused-result)
 
 # Prefer Conan-provided packages over system ones
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
-
 
 # TODO: Move these flags into a "boost" cmake target
 add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED -DBOOST_COROUTINES_NO_DEPRECATION_WARNING)
@@ -77,7 +79,6 @@ if (NOT xxHash_FOUND)
     pkg_search_module(xxHash REQUIRED IMPORTED_TARGET xxhash libxxhash)
     add_library(xxHash::xxhash ALIAS PkgConfig::xxHash)
 endif()
-
 
 find_package(Vulkan REQUIRED)
 
